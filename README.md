@@ -30,7 +30,7 @@ pip install numpy pillow torch
 To run the script, use the following command:
 
 ```sh
-python script.py /path/to/your/images
+python mhd_CUDA.py /path/to/your/images
 ```
 
 This command will process all `.png` and `.jpg` images in the specified directory.
@@ -40,7 +40,7 @@ This command will process all `.png` and `.jpg` images in the specified director
 - `start_block` (optional): Specify the starting block index for processing. This is useful if you want to resume processing from a specific block.
 
 ```sh
-python script.py /path/to/your/images 200
+python mhd_CUDA.py /path/to/your/images 200
 ```
 
 In this example, processing starts from the 200th image.
@@ -58,7 +58,7 @@ In this example, processing starts from the 200th image.
 If you have a folder of images located at `/data/images`, you can run the script as follows:
 
 ```sh
-python script.py /data/images
+python mhd_CUDA.py /data/images
 ```
 
 This will process all the images in the folder, calculate the distance matrix, and save the blocks of the matrix in `G:\distance_matrix_blocks`.
