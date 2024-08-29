@@ -38,7 +38,7 @@ def main(directory):
 
     # Copy the upper triangular part to the lower triangular part, block by block
     n = final_matrix.shape[0]
-    block_size = 1000  # Block size, adjustable to balance between memory usage and performance
+    block_size = 1  # Block size, adjustable to balance between memory usage and performance
 
     for i in range(0, n, block_size):
         for j in range(i + 1, n, block_size):
