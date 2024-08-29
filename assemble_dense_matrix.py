@@ -2,8 +2,9 @@ import numpy as np
 import os
 import re
 
+# Function to extract the start and end indices from the filename
 def extract_indices(filename):
-    """Extrae los índices de inicio y fin del bloque de filas a partir del nombre del archivo."""
+    """Extracts the start and end indices of the row block from the filename."""
     match = re.search(r'_(\d+)_(\d+)_02\.npy', filename)
     if match:
         start_index = int(match.group(1))
@@ -11,51 +12,55 @@ def extract_indices(filename):
         return start_index, end_index
     return None, None
 
+# Main function to reassemble the distance matrix from blocks
 def main(directory):
-    # Obtener la lista de archivos en el directorio
+    # Get the list of files in the specified directory
     files = [f for f in os.listdir(directory) if f.endswith('.npy')]
     
-    # Filtrar archivos que no coincidan con el patrón esperado
+    # Filter out files that do not match the expected pattern
     files = [f for f in files if extract_indices(f)[0] is not None]
 
-    # Ordenar los archivos según el índice de inicio del bloque de filas
+    # Sort the files based on the start index of the row block
     files.sort(key=lambda f: extract_indices(f)[0])
 
-    # Crear una lista para almacenar las partes de la matriz
+    # List to store the parts of the matrix
     matrix_parts = []
 
-    # Cargar y agregar las matrices en la lista correspondiente
+    # Load and add the matrix parts to the list
     for file in files:
         filepath = os.path.join(directory, file)
-        print(f"Leyendo y añadiendo a la matriz: {file}")  # Imprime el nombre del archivo
-        matrix_part = np.load(filepath).astype(np.float32)  # Convertir a float32 inmediatamente
+        print(f"Reading and adding to the matrix: {file}")  # Print the filename
+        matrix_part = np.load(filepath).astype(np.float32)  # Convert to float32 immediately
         matrix_parts.append(matrix_part)
 
-    # Reconstruir la matriz cuadrada original concatenando las partes verticalmente
+    # Reconstruct the original square matrix by concatenating the parts vertically
     final_matrix = np.vstack(matrix_parts)
 
-    # Copiar la parte triangular superior a la triangular inferior bloque por bloque
+    # Copy the upper triangular part to the lower triangular part, block by block
     n = final_matrix.shape[0]
-    block_size = 1000  # Tamaño del bloque, ajustable para equilibrar entre uso de memoria y rendimiento
+    block_size = 1000  # Block size, adjustable to balance between memory usage and performance
 
     for i in range(0, n, block_size):
         for j in range(i + 1, n, block_size):
             i_end = min(i + block_size, n)
             j_end = min(j + block_size, n)
+            # Copy the transpose of the upper block to the corresponding lower block
             final_matrix[j:j_end, i:i_end] = final_matrix[i:i_end, j:j_end].T
 
-    # Verificar si la matriz es cuadrada
+    # Check if the matrix is square
     if final_matrix.shape[0] == final_matrix.shape[1]:
-        # Guardar la matriz reconstruida en el mismo directorio
+        # Save the reconstructed matrix in the same directory
         output_path = os.path.join(directory, "final_dense_matrix.npy")
         np.save(output_path, final_matrix)
-        print(f"Matriz reconstruida guardada en: {output_path}")
+        print(f"Reconstructed matrix saved at: {output_path}")
     else:
-        print("Error: La matriz reconstruida no es cuadrada.")
+        print("Error: The reconstructed matrix is not square.")
 
+# Entry point of the script
 if __name__ == "__main__":
     import sys
+    # Check if the correct number of arguments is provided
     if len(sys.argv) != 2:
-        print("Uso: python assemble_dense_matrix.py <directorio>")
+        print("Usage: python assemble_dense_matrix.py <directory>")
     else:
         main(sys.argv[1])
