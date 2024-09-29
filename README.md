@@ -63,13 +63,3 @@ Open and execute the notebook `03-MatrixAnalysis.ipynb` to perform UMAP dimensio
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
-
-## Contact
-
-For questions or support, please contact:
-
-- **Name**: Your Name
-- **Email**: [your_email@domain.com](mailto:your_email@domain.com)
-
----
-*This README was generated to provide clear guidance on how to use and contribute to the project. Feel free to modify it according to your project’s specific needs.*
