@@ -1,112 +1,75 @@
-# Image Point Set Distance Calculator
 
-This Python project processes images, converts them into sets of points based on white pixels, and calculates the Modified Hausdorff Distance (MHD) between each set of points. The results are saved in blocks as distance matrices. This is particularly useful for comparing image similarity in large datasets.
+# Image Analysis Project with Modified Hausdorff Distance, UMAP, and Clustering
 
-Additionally, the project includes a script to reassemble these matrix blocks into a single dense matrix, with elements converted to `float32` to save space.
+This repository contains the source code for a project that performs image analysis in three main steps using Jupyter notebooks:
 
-## Features
+1. **Image Processing**: Preprocessing and preparing images for analysis.
+2. **Modified Hausdorff Distance Calculation**: Calculating the distance between all processed images.
+3. **Result Analysis**: Using UMAP for dimensionality reduction and applying clustering techniques to interpret the data.
 
-- **Image Processing:** Converts images to grayscale and identifies white pixel locations.
-- **Point Filtering:** Filters points to reduce computational load.
-- **Distance Calculation:** Computes the Modified Hausdorff Distance between sets of points.
-- **Block-wise Processing:** Saves results in blocks for efficient handling of large datasets.
-- **GPU Support:** Leverages GPU acceleration if available.
-- **Matrix Reassembly:** Reassembles the saved blocks into a single dense matrix and optimizes memory usage by converting elements to `float32`.
+## Table of Contents
 
-## Prerequisites
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [Usage](#usage)
+  - [1. Image Processing](#1-image-processing)
+  - [2. Modified Hausdorff Distance Calculation](#2-modified-hausdorff-distance-calculation)
+  - [3. Result Analysis](#3-result-analysis)
+- [Project Structure](#project-structure)
+- [Contributions](#contributions)
+- [License](#license)
+- [Contact](#contact)
 
-Before you begin, ensure you have the following installed:
+## Requirements
 
-- Python 3.6+
-- NumPy
-- Pillow (PIL)
-- PyTorch
-
-You can install the required Python packages using:
-
-```sh
-pip install numpy pillow torch
-```
+- Python 3.x
+- Jupyter Notebook
+- Required libraries (included in `requirements.txt`):
+  - NumPy
+  - OpenCV
+  - SciPy
+  - scikit-learn
+  - UMAP-learn
+  - Matplotlib
+  - HDBSCAN
 
 ## Usage
 
-### Step 1: Calculate the Distance Matrix
+### 1. Image Processing
 
-To run the script that calculates the distance matrix, use the following command:
+Open and execute the notebook `01-ImagePreparation.ipynb` to process the input images. This notebook reads the images, preprocesses them by converting them to grayscale, resizing them, and normalizing them for analysis.
 
-```sh
-python mhd_CUDA.py /path/to/your/images
+### 2. Modified Hausdorff Distance Calculation
+
+Open and execute the notebook `02-MHD-matrixBuilder.ipynb` to calculate the Modified Hausdorff Distance (MHD) between the processed images. The result will be saved in a CSV file.
+
+### 3. Result Analysis
+
+Open and execute the notebook `03-MatrixAnalysis.ipynb` to perform UMAP dimensionality reduction and clustering using HDBSCAN and DBSCAN. This notebook generates clustering metrics and saves images of the cluster centroids.
+
+## Project Structure
+
 ```
-
-This command will process all `.png` and `.jpg` images in the specified directory.
-
-#### Optional Parameters
-
-- `start_block` (optional): Specify the starting block index for processing. This is useful if you want to resume processing from a specific block.
-
-```sh
-python mhd_CUDA.py /path/to/your/images 200
+├── images/                        # Original images
+├── processed/                     # Processed images
+├── results/                       # Analysis results
+├── 01-ImagePreparation.ipynb      # Notebook for image processing
+├── 02-MHD-matrixBuilder.ipynb     # Notebook for calculating Modified Hausdorff Distance
+├── 03-MatrixAnalysis.ipynb        # Notebook for UMAP and clustering analysis
+├── requirements.txt               # Project dependencies
+└── README.md                      # Project documentation
 ```
-
-In this example, processing starts from the 200th image.
-
-### Step 2: Reassemble the Distance Matrix Blocks
-
-Once the distance matrix blocks have been calculated and saved, you can reassemble them into a single dense matrix using the following script:
-
-```sh
-python assemble_dense_matrix.py /path/to/distance_matrix_blocks
-```
-
-This script will:
-
-1. Load all the `.npy` files from the specified directory.
-2. Reassemble the blocks into a full distance matrix.
-3. Copy the upper triangular part of the matrix to the lower triangular part to ensure symmetry.
-4. Save the final matrix as `final_dense_matrix.npy` in the same directory.
-
-### How It Works
-
-1. **Image Loading:** The script loads all `.png` and `.jpg` images from the specified directory.
-2. **Point Extraction:** Each image is converted to grayscale, and the coordinates of white pixels are extracted.
-3. **Distance Matrix Calculation:** The Modified Hausdorff Distance between each pair of point sets is calculated.
-4. **Block Processing:** The distance matrix is processed in blocks to handle large datasets efficiently.
-5. **Result Storage:** Each block of the distance matrix is saved to disk in the specified directory.
-6. **Matrix Reassembly:** The matrix blocks are reassembled into a single dense matrix, with elements stored as `float32` to save space.
-
-## Example
-
-If you have a folder of images located at `/data/images`, you can run the script as follows:
-
-```sh
-python mhd_CUDA.py /data/images
-```
-
-This will process all the images in the folder, calculate the distance matrix, and save the blocks of the matrix in `G:\distance_matrix_blocks`.
-
-To reassemble the blocks into a single matrix:
-
-```sh
-python assemble_dense_matrix.py G:\distance_matrix_blocks
-```
-
-This will create a file named `final_dense_matrix.npy` in the `G:\distance_matrix_blocks` directory.
-
-## Output
-
-- **Distance Matrix Blocks:** The script saves the distance matrix blocks as `.npy` files in the specified save directory. You will find files named like `distance_matrix_block_<start>_<end>_02.npy`.
-- **Final Dense Matrix:** After reassembly, the final dense matrix will be saved as `final_dense_matrix.npy`.
-
-## Performance Considerations
-
-- **Block Size:** The `block_size` parameter in the script controls how many images are processed in a single block. You may need to adjust this value based on your system's memory capacity.
-- **GPU Utilization:** The script automatically detects if a CUDA-compatible GPU is available and utilizes it for faster computations. If no GPU is available, the CPU will be used instead.
-- **Memory Optimization:** The reassembly script converts the matrix elements to `float32` to reduce the memory footprint.
 
 ## License
 
-This project is licensed under the MIT License. See the `LICENSE` file for details.
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
 
-## Contributing
+## Contact
 
-If you have suggestions for improving this script, feel free to open an issue or submit a pull request.
+For questions or support, please contact:
+
+- **Name**: Your Name
+- **Email**: [your_email@domain.com](mailto:your_email@domain.com)
+
+---
+*This README was generated to provide clear guidance on how to use and contribute to the project. Feel free to modify it according to your project’s specific needs.*
